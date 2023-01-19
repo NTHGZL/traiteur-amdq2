@@ -1,17 +1,21 @@
 version: '3'
 services:
-  backend:
-    build: 
-      context: ./api
-      dockerfile: Dockerfile
-    ports:
-      - "3000:3000"
-    environment:
-      - DATABASE_URL=mysql://user:password@db:3306/traiteur
-    depends_on:
-      - db
-      - rabbitmq
-
+  # backend:
+  #   build: 
+  #     context: ./api
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3000:3000"
+  #   environment:
+  #     - DATABASE_URL=mysql://user:password@db:3306/traiteur
+  # worker:
+  #   build: 
+  #     context: ./worker
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "3001:3001"
+  #   environment:
+  #     - DATABASE_URL=mysql://user:password@db:3306/traiteur
   db:
     image: mysql:8
     environment:

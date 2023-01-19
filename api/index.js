@@ -1,6 +1,6 @@
-
-const express = require('express')
-const { createOrder, updateStatus } = require('./repository')
+import express from 'express'
+import { createOrder, getStatut, updateStatus } from './repository/repository.js'
+import amqp from 'amqplib'
 const app = express()
 const port = 3000
 
@@ -8,34 +8,30 @@ app.get('/', (req, res) => {
   res.send('Hello World!')
 })
 
-app.post('/order', (req, res) => {
-  const amqp = require('amqplib');
+const connection = await amqp.connect('amqp://localhost:5672')
+const channel = await connection.createChannel()
+await channel.assertExchange('ordersExchange', 'fanout', { durable: true, autoDelete: false });
+const q = channel.assertQueue('orders', {durable: true})
+await channel.bindQueue(q.queue, 'ordersExchange', '')
 
-  app.post('/order', async (req, res) => {
-      try {
 
-          const order = await createOrder()
-        
-          const connection = await amqp.connect('amqp://localhost:5672');
-          
-          const channel = await connection.createChannel();
-          
-          channel.assertExchange('orders', 'direct', { durable: true });
-          
-          channel.publish('orders', 'update', Buffer.from(JSON.stringify({ orderId: order.id, status: 'In progress...' })));
-      } catch (error) {
-          console.error(error);
-          res.status(500).send('Error updating order status.');
-      }
-  });
+
+app.post('/order', async (req, res) => {
   
-})
+  try {
 
-const amqp = require('amqplib');
+    const order = await createOrder()
+    channel.publish('ordersExchange', '', Buffer.from(JSON.stringify({ orderId: order.id, status: 'Commande en cours' })));
+    res.send(order)
+  } catch (error) {
+      console.error(error);
+      res.status(500).send('Error updating order status.');
+  }
+  });
 
 app.get('/order/:id', async (req, res) => {
     try {
-      
+      const order = await getStatut(req.params.id)
       const connection = await amqp.connect('amqp://localhost:5672');
       
       const channel = await connection.createChannel();
@@ -54,7 +50,10 @@ app.get('/order/:id', async (req, res) => {
               }
               channel.ack(msg);
           }
+        
       });
+
+      res.send(order)
     } catch (error) {
         console.error(error);
         res.status(500).send('Error getting order status.');

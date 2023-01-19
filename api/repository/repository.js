@@ -1,4 +1,4 @@
-const Sequelize = require('sequelize');
+import Sequelize from 'sequelize'
 const sequelize = new Sequelize('traiteur', 'user', 'password', {
   host: 'localhost',
   dialect: 'mysql',
@@ -6,18 +6,25 @@ const sequelize = new Sequelize('traiteur', 'user', 'password', {
 
 const Order = sequelize.define('order', {
     status: Sequelize.STRING,
-  });
+  }, {freezeTableName: true});
 
-
+  sequelize.sync();
 
 export const createOrder = async () => {
+    
     const order = await Order.create({
-        status: 'In progress...'
+        status: 'Commande en cours'
     })
 
     sequelize.sync();
 
     return order
+}
+
+export const getStatut = async(id) => {
+  const order = await Order.findByPk(id)
+
+  return order
 }
 
 export const updateStatus = async (status) => {

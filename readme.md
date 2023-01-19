@@ -6,6 +6,7 @@ This project uses Docker and Docker Compose to make deployment and execution of 
 
 - [Docker](https://www.docker.com/)
 - [Docker Compose](https://docs.docker.com/compose/) (version 1.6.0 or higher recommended)
+- Node 14
 
 ## Starting the project
 
@@ -35,12 +36,35 @@ docker compose up -d
 
 This will start the application containers in the background. You can check the status of the containers by running docker-compose ps.
 
+5. Run API
+
+    ```bash
+        cd api/
+    ```
+    
+    ```bash
+        npm start
+    ```
+7. Run Worker
+
+    ```bash
+        cd worker/
+    ```
+    
+    ```bash
+        npm start
+    ```
+
 5. Stopping the project
 
 To stop the containers, use the following command:
 ```bash
 docker-compose stop
 ```
+
+Ctrl+C to stop node apis
+
+
 6. Removing containers
 
 To remove the containers, use the following command:
@@ -58,6 +82,7 @@ For more information on using Docker Compose, refer to the official documentatio
 _________________________________________________________________________
 
 Create order :
+
 POST http://localhost:3000/order
 
 Get order

@@ -38,22 +38,23 @@ This will start the application containers in the background. You can check the 
 
 5. Run API
 
-    ```bash
-        cd api/
-    ```
+```bash
+cd api/
+```
     
-    ```bash
-        npm start
-    ```
+```bash
+npm start
+```
+
 7. Run Worker
 
-    ```bash
-        cd worker/
-    ```
+```bash
+cd worker/
+```
     
-    ```bash
-        npm start
-    ```
+```bash
+npm start
+```
 
 5. Stopping the project
 
